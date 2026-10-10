@@ -1,0 +1,35 @@
+# Read by ESP-IDF as a component Kconfig, and by both forges' `make menu`
+# (scripts/menu.py) for the LOADCELL_<CHIP> prompts. stm-forge has no Kconfig
+# build step: its build only sees the defconfig lines, as
+# -DCONFIG_LOADCELL_<CHIP>=1 or 0. Every chip is off unless set.
+menuconfig LOADCELL
+    bool "Load cell ADC subsystem"
+    default y
+    help
+        The load cell core: struct loadcell_dev, loadcell_read(), tare,
+        calibration, conversion to units and the loadcell_* log helpers.
+        Pick the chip drivers you need below; none is built by default, so a
+        chip missing from sdkconfig is off.
+
+if LOADCELL
+
+    config LOADCELL_HX711
+        bool "Avia HX711 (two-wire, bit-banged)"
+        default n
+        help
+            Build the HX711 driver: hx711_init() and friends.
+
+    config LOADCELL_NAU7802
+        bool "Nuvoton NAU7802 (I2C, 0x2A)"
+        default n
+        help
+            Build the NAU7802 driver: nau7802_init() and friends.
+
+    config LOADCELL_DEBUG
+        bool "loadcell_dbg() lines"
+        default n
+        help
+            STM32 HAL only: compile loadcell_dbg() lines in. On ESP-IDF
+            loadcell_dbg() is ESP_LOGD and the log level decides.
+
+endif # LOADCELL

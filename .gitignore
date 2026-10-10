@@ -1,0 +1,19 @@
+# ESP-IDF builds of examples/esp/
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+docs/*.pdf
+test/test_hx711_math
+test/test_nau7802_math
+test/esp/test_core
+test/esp/test_hx711
+test/esp/test_hx711_shared
+test/esp/test_nau7802
+test/esp/test_nau7802_shared
+test/esp/test_port_esp
+test/stm/test_core
+test/stm/test_hx711
+test/stm/test_nau7802
+test/stm/test_port_stm
