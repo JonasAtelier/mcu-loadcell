@@ -23,7 +23,8 @@ the ESP-IDF component directory `loadcell` as well.
 > **Hardware unverified.** Host tests use simulated devices and platform stubs.
 > Nothing here has run on a physical chip.
 
-[Supported hardware](#supported-hardware) · [Install](#install) ·
+[Supported hardware](#supported-hardware) · [Drivers](#drivers) ·
+[Install](#install) ·
 [Quick start](#quick-start) · [Examples](#examples) ·
 [Documentation](#documentation) · [Tests](#tests)
 
@@ -33,10 +34,38 @@ Both drivers support both platforms. Enable only the drivers you need.
 
 | Chip | Interface | Notes |
 |---|---|---|
-| **HX711** | two GPIO pins, bit-banged | gain 128/64 on channel A, 32 on B; 10 or 80 SPS by its RATE pin; interrupts masked for each clock pulse's microsecond high phase |
-| **NAU7802** | I2C, 0x2A | PGA x1–x128, 10–320 SPS, two channels, internal LDO to excite the bridge, hardware offset trim |
+| **HX711** | two GPIO pins | Avia 24-bit load-cell ADC |
+| **NAU7802** | I2C | Nuvoton 24-bit load-cell ADC |
 
 Wiring for both is in the [wiring guide](docs/hardware.md).
+
+## Drivers
+
+<details><summary><b>HX711</b> — two GPIO pins</summary>
+
+Gain 128/64 on channel A, 32 on B; 10 or 80 SPS by its RATE pin; interrupts
+masked for each clock pulse's microsecond high phase.
+
+- Interface: two GPIO pins, bit-banged
+- Examples: ESP-IDF [hx711](examples/esp/hx711/) · STM32 HAL
+  [hx711](examples/stm/hx711/main.c)
+- **HX711 on the HAL:** microsecond timing from SysTick, which `HAL_Init()`
+  runs; an app on another timebase defines its own `loadcell_delay_us()`.
+- Chip reference: [HX711](docs/chips.md#hx711)
+
+</details>
+
+<details><summary><b>NAU7802</b> — I2C</summary>
+
+PGA x1–x128, 10–320 SPS, two channels, internal LDO to excite the bridge,
+hardware offset trim.
+
+- Interface: I2C, 0x2A
+- Examples: ESP-IDF [nau7802](examples/esp/nau7802/) · STM32 HAL
+  [nau7802](examples/stm/nau7802/main.c)
+- Chip reference: [NAU7802](docs/chips.md#nau7802)
+
+</details>
 
 ## Install
 
@@ -136,10 +165,7 @@ calibration.
 
 ## Examples
 
-| Chip | ESP-IDF | STM32 HAL |
-|---|---|---|
-| HX711 | [hx711](examples/esp/hx711/) | [hx711](examples/stm/hx711/main.c) |
-| NAU7802 | [nau7802](examples/esp/nau7802/) | [nau7802](examples/stm/nau7802/main.c) |
+Each driver's examples are listed under [Drivers](#drivers).
 
 ESP-IDF examples locate this library through `EXTRA_COMPONENT_DIRS`, which
 assumes the repository is checked out as `loadcell`. With ESP-IDF activated:
@@ -158,8 +184,6 @@ STM32 examples are snippets to integrate into your application.
   persistence: the offset and scale live in RAM until you store them.
 - **Blocking reads.** Each read waits for a conversion, at most its timeout;
   the wait polls, sleeping at least a tick between looks.
-- **HX711 on the HAL:** microsecond timing from SysTick, which `HAL_Init()`
-  runs; an app on another timebase defines its own `loadcell_delay_us()`.
 - **Concurrency:** no locks. Use one thread per device and bus, or supply a
   mutex.
 
