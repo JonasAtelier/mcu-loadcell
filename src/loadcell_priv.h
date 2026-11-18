@@ -182,11 +182,23 @@ static inline esp_err_t loadcell_esp_err(int err)
 }
 
 #else /* STM32 HAL */
+/*
+ * Undefined, the include below fails with only
+ * `#include expects "FILENAME" or <FILENAME>`. Every library source that
+ * needs the HAL includes this header before any chip header, so one check
+ * here names the cause on every build route. The HAL module check sits in
+ * its #else: without the family header no module looks enabled, and the
+ * check would blame the module instead.
+ */
+#ifndef CMSIS_device_header
+#error "loadcell: CMSIS_device_header is not defined; define it as the STM32 family header, \"stm32f4xx.h\", \"stm32f7xx.h\" or \"stm32g0xx.h\" (CMake: set(MCU_DEVICE_HEADER stm32f4xx.h))"
+#else
 #include CMSIS_device_header
 
 #if !defined(HAL_I2C_MODULE_ENABLED) && CONFIG_LOADCELL_NAU7802
 #error "the NAU7802 driver needs the HAL I2C module: #define HAL_I2C_MODULE_ENABLED in the app's stm32<family>xx_hal_conf.h, with stm32<family>xx_hal_i2c.c in the build"
 #endif
+#endif /* CMSIS_device_header */
 
 #ifdef HAL_I2C_MODULE_ENABLED
 typedef I2C_HandleTypeDef *loadcell_i2c_bus;

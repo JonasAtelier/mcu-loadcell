@@ -34,7 +34,8 @@ examples/
   stm/<chip>/               STM32 snippets: hx711, nau7802
 docs/                       the five guides; datasheet PDFs here are gitignored
 assets/                     README and wiring figures
-CMakeLists.txt              ESP-IDF only; stm-forge globs src/**/*.c instead
+CMakeLists.txt              ESP-IDF component; elsewhere a static library for add_subdirectory(); stm-forge globs src/**/*.c instead
+                            the static library's options are Kconfig's bool entries, found by the type line directly under each `config`
 Kconfig                     LOADCELL and LOADCELL_<CHIP>, for ESP-IDF and both forges' menus
 idf_component.yml           ESP-IDF component manifest
 ```
@@ -116,7 +117,8 @@ delay and mask helpers.
 3. In init: set `cell.name` first, refuse a bad config, check presence,
    allocate, attach, configure, and only on success set `cell.ops` and
    `cell.priv`. Work in errno; return `LOADCELL_HANDLE_RET(err)`.
-4. Add `CONFIG_LOADCELL_FOO` to the no-chip checks in `CMakeLists.txt` and
+4. Add `CONFIG_LOADCELL_FOO` to the no-chip checks in `CMakeLists.txt` (its
+   ESP-IDF part; the `add_subdirectory()` part reads `Kconfig`) and
    `src/loadcell_port_stm.c`, a HAL module `#error` to `src/loadcell_priv.h`
    if it needs one, a `src/foo/foo.c` line to `CMakeLists.txt`, a `config
    LOADCELL_FOO` to `Kconfig`, `# LOADCELL_FOO is not set` to both forges'
