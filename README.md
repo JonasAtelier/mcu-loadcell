@@ -50,7 +50,7 @@ To run the simulated tests on your computer, run `make -C test test` from the li
 
 ## License
 
-[MIT](LICENSE)
+© 2026 JonasAtelier, [GPL-3.0-only](LICENSE)
 
 <p align="center">
   <img src="assets/loadcell.svg" width="100%" alt="A load cell bridge under a weight, read out by an HX711">

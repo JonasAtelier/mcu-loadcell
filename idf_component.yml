@@ -1,6 +1,6 @@
 version: "0.1.0"
 description: mcu-loadcell load cell ADC subsystem for ESP-IDF and STM32 HAL, with HX711 (two-wire) and NAU7802 (I2C) drivers.
-license: MIT
+license: GPL-3.0-only
 dependencies:
   idf:
     version: ">=5.2"
